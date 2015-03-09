@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        ul::-webkit-scrollbar {
+            width: 3px !important;
+        }
+        ul::-webkit-scrollbar-thumb {
+            background: #AEACAC;
+        }
+        .parentElem {
+            float: left;
+            width: 250px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            height: 400px;
+            /*border: 1px solid #ccc;*/
+        }
+        .parentElem li {
+            width: 250px;
+            height: 50px;
+            line-height: 50px;
+            background: #fbd500;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #canvas1 {
+            float: left;
+            margin-left: -3px;
+            /*border: 1px solid #ccc;*/
+        }
+
+        .childElem {
+            float: left;
+            width: 250px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            height: 400px;
+            /*border: 1px solid #ccc;*/
+        }
+        .childElem li {
+            width: 250px;
+            height: 50px;
+            line-height: 50px;
+            margin-bottom: 20px;
+            background: #fbd500;
+            text-align: center;
+        }
+        #canvas2 {
+            float: left;
+            margin-left: -3px;
+            /*border: 1px solid #ccc;*/
+        }
+        .grandChildElem {
+            float: left;
+            width: 250px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            height: 400px;
+            /*border: 1px solid #ccc;*/
+        }
+        .grandChildElem li {
+            width: 250px;
+            height: 50px;
+            line-height: 50px;
+            margin-bottom: 20px;
+            background: #fbd500;
+            text-align: center;
+        }
+
+        .parentElem li:last-child, .childElem li:last-child, .grandChildElem li:last-child {
+            margin-bottom: 0; 
+        }
+    </style>
+    <script src="jquery.js"></script>
+</head>
+<body>
+    <div class="container">
+        <ul class="parentElem">
+            <li data-id="a" data-childIds="a3|0.1">a</li><!-- a1,a2,a3,a4 -->
+            <li data-id="b" data-childIds="a3|0.6">b</li>
+            <li data-id="c" data-childIds="a3">c</li>
+            <li data-id="d" data-childIds="a3">d</li>
+            <li data-id="e" data-childIds="a3">e</li><!-- ,a6,a7,a8 -->
+            <li data-id="f" data-childIds="a3">f</li>
+            <li data-id="g" data-childIds="a3">g</li>
+            <li data-id="h" data-childIds="a3">h</li><!-- 1,a2,a3,a4,a5,a6,a7,a8 -->
+        </ul>
+        <canvas id="canvas1" width="300" height="400"></canvas>
+        <ul class="childElem" style="">
+            <li data-id="a1" data-childIds="cc">a1</li>
+            <li data-id="a2" data-childIds="bb">a2</li>
+            <li data-id="a3" data-childIds="ff">a3</li>
+            <li data-id="a4" data-childIds="dd">a4</li>
+            <li data-id="a5" data-childIds="ee">a5</li>
+            <li data-id="a6" data-childIds="hh">a6</li>
+            <li data-id="a7" data-childIds="gg">a7</li>
+            <li data-id="a8" data-childIds="aa">a8</li>
+        </ul>
+        <canvas id="canvas2" width="300" height="400"></canvas>
+        <ul class="grandChildElem">
+            <li data-id="aa">aa</li>
+            <li data-id="bb">bb</li>
+            <li data-id="cc">cc</li>
+            <li data-id="dd">dd</li>
+            <li data-id="ee">ee</li>
+            <li data-id="ff">ff</li>
+            <li data-id="gg">gg</li>
+            <li data-id="hh">hh</li>
+        </ul>
+    </div>
+
+<script>
+
+    // 调用
+    var options1 = {
+             canvas: $("#canvas1"),
+             parent: $(".parentElem"),
+              child: $(".childElem"),
+         isStraight: false,  // default is false
+             // arrows: {          // if isStraight is true, arrow is useful;
+             //        has: true,     // has arrow or not
+             //       size: 0.05,    // 箭头长度
+             //      sharp: 0.025,  // 箭头夹角
+             //  lineWidth: 2  // 箭头宽度
+             //    //color: "rgba(11, 84, 10 , 0.5)"  // defalut color is same to line's color;
+             // },
+              color: "rgba(211, 84, 0 , 0.5)",
+           beltSize: 0.05,
+          curvature: [0.5, 0.5],
+             scroll: {
+                open: true, // 开启滚动渲染
+                callback: function () {
+                    console.log("第一列的回调哦~~");
+                }
+            }
+    };
+
+    var options2 = {
+        canvas: $("#canvas2"),
+        parent: $(".childElem"),
+        child: $(".grandChildElem"),
+        isStraight: true,  // if isStraight is true, curvature is no useful;
+        arrows: {          // if isStraight is true, arrow is useful;
+            has: true,     // has arrow or not
+            size: 0.05,    // 箭头长度
+            sharp: 0.025,  // 箭头夹角
+            lineWidth: 2  // 箭头宽度
+            //color: "rgba(11, 84, 10 , 0.5)"  // defalut color is same to line's color;
+        },
+        color: "rgba(211, 84, 0 , 0.5)",
+        beltSize: 0.05,
+        scroll: {
+            open: true,
+            pre: options1, // 联动上一张画布
+            callback: function(){
+                console.log("可以动态加载~~");
+            },
+            childIsLast: {
+                open: true,
+                callback: function () {
+                    console.log("最后一列的回调哦~~");
+                }
+            }
+        }
+    };
+
+    linkBelt(options1);
+    linkBelt(options2);
+
+</script>
+</body>
+</html>
